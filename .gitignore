@@ -1,0 +1,4 @@
+bower_components/
+node_modules/
+server/public/bower_components/
+server/public/node_modules/

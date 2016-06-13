@@ -1,0 +1,158 @@
+<div class="container">
+      <div class="row row-content">
+        <!-- Tab content -->
+        
+                <ul class='nav nav-tabs nav-justified' role='tablist' style='padding:0px'>
+                    <li role='presentation' class='active'><a href='#Profile' role='tab' data-toggle='tab' style='padding:0px'><h3>Profile</h3></a></li>
+                    <li role='presentation' class='cd-lg-12'><a href='#TimeScore' role='tab' data-toggle='tab' style='padding:0px'><h3>Common stats</h3></a></li>
+                    <li role='presentation' class=''><a href='#Favorites' role='tab' data-toggle='tab' style='padding:0px'><h3>Favorites</h3></a></li>
+                </ul>
+            
+                <div class='tab-content' ng-controller='statsController'>
+                    <div class='active tab-pane fade in' id='Profile'>
+                        <h1>Animelist of {{dd.uName}}</h1>
+                            <div class="media-left media-middle">   
+                                <img class="media-object img-thumbnail"
+                                ng-src='http://cdn.myanimelist.net/images/userimages/{{dd._id}}.jpg'>
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                    <div class='col-md-3'>
+                                        <h4>Completed: {{dd.uCompleted}}</h4>
+                                        <h4>Watching: {{dd.uWatching}}</h4>
+                                        <h4>On-Hold: {{dd.uOnhold}}</h4>
+                                        <h4>Dropped: {{dd.uDropped}}</h4>
+                                        <h4>Plan to watch: {{dd.uPTW}}</h4>
+                                    </div>
+                                    <div class='col-md-3'>
+                                        <h4>Mean score: {{meanScore}}</h4>
+                                        <h4>Watching time: {{dd.uDSW}}</h4>
+                                        <h4>All episodes: {{dd.watchedEpsAll}}</h4>
+                                    </div>
+                                    <div class='col-md-6'>
+                                    <canvas id="pie" class="chart chart-pie" chart-options="{animation: false}" chart-data="data" chart-labels="labels"></canvas> </div>
+                            </div>
+
+                           </br>
+
+                            <ul class='nav nav-pills'>
+                                <li role='presentation' ng-class='{active:isSelected(1)}'>
+                                    <a ng-click='select(1)'  aria-controls="all" role='tab'>All</a>
+                                </li>
+                                <li role='presentation' ng-class='{active:isSelected(2)}'>
+                                    <a ng-click='select(2)'  aria-controls="watching">Watching</a>
+                                </li>
+                                <li role='presentation' ng-class='{active:isSelected(3)}'>
+                                    <a ng-click='select(3)'  aria-controls="completed" role='tab'>Completed</a>
+                                </li>
+                                <li role='presentation' ng-class='{active:isSelected(4)}'>
+                                    <a ng-click='select(4)'  aria-controls='onhold' role='tab'>On-Hold</a>
+                                </li>
+                                <li role='presentation' ng-class='{active:isSelected(5)}'>
+                                    <a ng-click='select(5)'  aria-controls='dropped' role='tab'>Dropped</a>
+                                </li>
+                                <li role='presentation' ng-class='{active:isSelected(6)}'>
+                                    <a ng-click='select(6)'  aria-controls='ptw' role='tab'>Plan to watch</a>
+                                </li>
+                            </ul>
+                            <div class='tab-content'>
+                                <table class="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <th><a ng-click='filterBy("seriesTitle")'>Anime</a></th>
+                                        <th><a ng-click='filterBy("-type")'>Type</th>
+                                        <th><a ng-click='filterBy("-watchedEp")'>Progress</th>
+                                        <th><a ng-click='filterBy("-allEp")'>All episodes</th>
+                                        <th><a ng-click='filterBy("-tags")'>Tags</th>
+                                        <th><a ng-click="filterBy('-myScore')">User's Score</th>
+                                        <th><a ng-click='filterBy("-score")'>Mean score of users</th>
+                                        <th><a ng-click='filterBy("-div")'>Score deviation</th>
+                                      </tr>
+                                    </thead>  
+                                   <tbody>   
+                                      <tr ng-repeat="a in dd.anime | orderBy:animeOrder | filter:filtText">
+                                        <td><a href="http://myanimelist.net/anime/{{a._id}}">{{a.seriesTitle}}</a></td>
+                                        <td>{{a.type}}</td>
+                                        <td>{{a.watchedEp}}</td>
+                                        <td>{{a.allEp}}</td>
+                                        <td>{{a.tags}}</td>
+                                        <td>{{a.myScore}}</td>
+                                        <td>{{a.score}}</td>
+                                        <td>{{a.div}}</td>
+                                      </tr> 
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                    <div class='tab-pane fade' id='TimeScore' ng-controller='statsController'>
+                    </br>
+
+                        <div class='col-md-6'>
+                            <h2>Avarages:</h2>
+                            <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th><h4>Parametr</h4></th>
+                                    <th><h4>Value</h4></th>
+                                  </tr>
+                                </thead>  
+                               <tbody>   
+                                  <tr>
+                                    <td>Mean watching time: </td>
+                                    <td>{{meanWatchingTime.toFixed(2)}} days per series</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Mean score:</td>
+                                    <td>{{dd.meanScore.toFixed(2)}}</td> 
+                                  </tr>
+                                  <tr>
+                                    <td>Mean duration of watched series:</td>
+                                    <td>{{meanEpisodesInSeries.toFixed(2)}} episodes</td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class='tab-pane fade' id='Favorites'>
+                    </br>
+                    <div class='col-md-6 col-md-offset-3'>
+                        <h2>Favorite genres:</h2>
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th><a ng-click='filterByy("name")'>Genre</a></th>
+                                <th><a ng-click='filterByy("-score")'>User mean score</th>
+                                <th><a ng-click='filterByy("-episodes")'>Episodes watched</th>
+                                <th><a ng-click='filterByy("-weightedScore")'>Weighted score</th>
+                                <th><a ng-click='filterByy("-count")'>Amount of titles</th>
+                              </tr>
+                            </thead>  
+                           <tbody>   
+                              <tr ng-repeat="g in genArr | orderBy:animeOrderr">
+                                <td>
+                                  
+                                    <a data-toggle='collapse' data-parent='#collapse' href="#collapse-{{g.a}}">        
+                                        {{g.name}}       
+                                    </a>        
+                                       
+                                    <div id='collapse-{{g.a}}' class='collapse'>  
+                                    </br>      
+                                        <div ng-repeat='a in g.anime'>
+                                            <a href='http://myanimelist.net/anime/{{a.id}}'>{{a.name}}</a>
+                                        </div>
+                                    </div>  
+                                </td>
+                                <td>{{g.score}}</td>
+                                <td>{{g.episodes}}</td>
+                                <td>{{g.weightedScore}}</td>
+                                <td>{{g.count}}</td>
+                              </tr> 
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
